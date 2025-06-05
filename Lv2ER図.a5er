@@ -1,0 +1,108 @@
+﻿# A5:ER FORMAT:19
+# A5:ER ENCODING:UTF8
+# A5:ER Mk-1 Copyright © 2007 m.matsubara
+# A5:SQL Mk-2 Version 2.20.3 Copyright © 1997 - 2025 m.matsubara
+#  https://a5m2.mmatsubara.com
+
+[Manager]
+ProjectName=POS_app_Lv2
+Author=
+MaxEntityRowShow=1000
+ReadOnlyRecommend=0
+Page=Main
+PageInfo="Main",2,"A3Landscape",$FFFFFF
+LogicalView=1
+DecodeDomain=0
+ViewModePageIndividually=1
+ViewMode=2
+ViewFormat=0
+UseNondependenceDashLine=0
+FontName=Tahoma
+FontSize=6
+PaperSize=A4Landscape
+HeaderLeft=
+HeaderCenter=
+HeaderRight=
+FooterLeft=
+FooterCenter=
+FooterRight=
+ShowPageoutRelation=1
+RDBMSType=6
+RDBMSTypeName=MySQL
+DefaultPkName=%0:s_PKC
+DefaultPkIndexName=%0:s_PKI
+DefaultIndexName=%0:s_IX%1:d
+DefaultFkName=%0:s_FK%1:d
+SqlSeparator=0
+UpperCaseKeyword=0
+ShowTag=1
+ShowCommonAttributes=0
+BugFixEntityWidth=1
+
+[Entity]
+PName=ITEM_MASTER
+LName=商品マスタ
+Comment=商品についてのマスター情報が含まれています
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=300
+Top=150
+Field="商品一意キー","PRD_ID","INT","NOT NULL",0,"","",$FFFFFFFF,""
+Field="商品コード","CODE","INT(25)",,,"","",$FFFFFFFF,""
+Field="商品名称","NAME","VARCHAR(50)",,,"","",$FFFFFFFF,""
+Field="商品単価","PRICE","INT",,,"","",$FFFFFFFF,""
+Index=商品コード=2,CODE
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20250527102001
+Position="MAIN",300,150,153,112
+ZOrder=1
+
+[Entity]
+PName=TRANSACTION
+LName=取引
+Comment=取引データ
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=700
+Top=150
+Field="取引一意キー","TRD_ID","INT","NOT NULL",0,"","",$FFFFFFFF,""
+Field="取引日時","DATETIME","TIMESTAMP","NOT NULL",,"","",$FFFFFFFF,""
+Field="レジ担当者コード","EMP_CD","CHAR(10)","NOT NULL",,"9999999999","空白の場合は\Q999999999\Q",$FFFFFFFF,""
+Field="店舗コード","STORE_CD","CHAR(5)","NOT NULL",,"","",$FFFFFFFF,""
+Field="POS機ID","POS_NO","CHAR(3)","NOT NULL",,"","",$FFFFFFFF,""
+Field="合計金額","TOTAL_AMT","INT","NOT NULL",,"","",$FFFFFFFF,""
+Field="合計金額（税抜）","TTL_AMT_EX_TAX","INT","NOT NULL",,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20250527101949
+Position="MAIN",700,150
+ZOrder=2
+
+[Entity]
+PName=TRANSACTION_DETAILS
+LName=取引明細
+Comment=
+TableInnerOption=
+TableOption=
+Page=MAIN
+Left=700
+Top=500
+Field="取引一意キー","TRD_ID","INT","NOT NULL",,"","",$FFFFFFFF,""
+Field="取引明細一意キー","DTL_ID","INT","NOT NULL",0,"","",$FFFFFFFF,""
+Field="商品一意キー","PRD_ID","INT","NOT NULL",,"","",$FFFFFFFF,""
+Field="商品コード","PRD_CODE","CHAR(13)","NOT NULL",,"","",$FFFFFFFF,""
+Field="商品名称","PRD_NME","VARCHAR(50)","NOT NULL",,"","",$FFFFFFFF,""
+Field="商品単価","PRD_PRICE","INT","NOT NULL",,"","",$FFFFFFFF,""
+Field="消費税区分","TAX_CD","CHAR(2)","NOT NULL",,"10","\Q10\Q固定",$FFFFFFFF,""
+Field="購入数","PRD_COUNT","INT","NOT NULL",,"","",$FFFFFFFF,""
+EffectMode=None
+Color=$000000
+BkColor=$FFFFFF
+ModifiedDateTime=20250527105941
+Position="MAIN",700,500
+ZOrder=4
