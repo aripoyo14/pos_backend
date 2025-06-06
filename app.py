@@ -4,7 +4,7 @@ import requests
 import json
 # from db_control import crud, mymodels
 from db_control import crud, mymodels_MySQL
-from schemas import Barcode, ItemInfo, PurchaseItem, PurchasePrice
+from schemas import Barcode, ItemInfo, PurchaseItem, TransactionId ,PurchasePrice
 
 # MySQLのテーブル作成
 from db_control.create_tables_MySQL import init_db
@@ -42,9 +42,8 @@ def purchase(purchase_item: PurchaseItem):
     result = crud.register(mymodels_MySQL.Transaction, purchase_item.dict())
     if not result:
         raise HTTPException(status_code=500, detail="Purchase failed")
-    
     result_obj = json.loads(result)
-    return result_obj[0] if result_obj else None
+    return {"trd_id": result_obj["trd_id"]} if result_obj else None
 
 # @app.post("/customers")
 # def create_customer(customer: Customer):

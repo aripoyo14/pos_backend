@@ -20,6 +20,10 @@ class PurchaseItem(BaseModel):
     TOTAL_AMT: int
     TTL_AMT_EX_TAX: int
 
+# 取引一意キーを受け取るスキーマ
+class TransactionId(BaseModel):
+    trd_id: int
+
 # 購入金額を返すためのスキーマ
 class PurchasePrice(BaseModel):
     totalPrice: int
