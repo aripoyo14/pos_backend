@@ -5,7 +5,7 @@ print("platform", platform.uname())
 
 from sqlalchemy import create_engine, insert, delete, update, select
 import sqlalchemy
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 import json
 import pandas as pd
 
@@ -13,6 +13,8 @@ import pandas as pd
 from db_control.connect_MySQL import engine
 # from db_control.mymodels import Customers
 from db_control.mymodels_MySQL import Item_master, Transaction, Transaction_Details
+
+SessionLocal = sessionmaker(bind=engine)
 
 def selectitem(mymodel, code):
     # session構築
@@ -41,32 +43,40 @@ def selectitem(mymodel, code):
     session.close()
     return result_json
 
-def register(mymodel, values):
-    # session構築
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    query = insert(mymodel).values(values)
+def register(mymodel, values:dict, session:Session=None):
+    """
+    mymodel: SQLAlchemyモデルクラス
+    values: モデルのカラムにマッピング可能なキーだけを含むdict
+    session: 既存セッションを渡すとそれを使い回します
+    戻り値: 挿入したレコードの主キー値（例: trd_id）
+    """
+    own_session = False
+    if session is None:
+        session = SessionLocal()
+        own_session = True
+        
+    # モデル定義から許可カラムを抽出
+    allowed_cols = {c.name for c in mymodel.__table__.columns}
+    filterd = {k: v for k, v in values.items() if k in allowed_cols}
+    
+    stmt = insert(mymodel).values(**filterd)
+ 
     try:
         # トランザクションを開始
         with session.begin():
             # データの挿入
-            result = session.execute(query)
+            result = session.execute(stmt)
             # 挿入されたデータのIDを取得
             inserted_id = result.inserted_primary_key[0]
-            # 挿入されたデータを取得
-            inserted_data = session.query(mymodel).filter(mymodel.TRD_ID == inserted_id).first()
-            result_json = json.dumps({
-                "trd_id": inserted_data.TRD_ID
-            }, ensure_ascii=False)
-
     except sqlalchemy.exc.IntegrityError:
-        print("一意制約違反により、挿入に失敗しました")
         session.rollback()
-
-    # セッションを閉じる
-    session.close()
-    return result_json
+        raise
+    finally:
+        # 外部からセッションを受け取った場合はcloseしない
+        if own_session:
+            session.close()
+            
+    return inserted_id
 
 # def myselectAll(mymodel):
 #     # session構築
