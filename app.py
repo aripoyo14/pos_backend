@@ -4,14 +4,13 @@ import requests
 import json
 # from db_control import crud, mymodels
 from db_control import crud, mymodels_MySQL
-from schemas import Barcode, ItemInfo, PurchaseItem, TransactionId ,PurchasePrice
+from schemas import Barcode, ItemInfo, Transaction,TransactionDetail, TransactionId ,PurchasePrice
 
 # MySQLのテーブル作成
 from db_control.create_tables_MySQL import init_db
 
 # # アプリケーション初期化時にテーブルを作成
 init_db()
-
 
 app = FastAPI()
 
@@ -37,9 +36,9 @@ def getitem(barcode: Barcode):
     result_obj = json.loads(result)
     return result_obj[0] if result_obj else None
 
-@app.post("/api/purchase")
-def purchase(purchase_item: PurchaseItem):
-    result = crud.register(mymodels_MySQL.Transaction, purchase_item.dict())
+@app.post("/api/transaction")
+def purchase(purchase_item: Transaction):
+    result = crud.register(mymodels_MySQL.Transaction, purchase_item.model_dump())
     if not result:
         raise HTTPException(status_code=500, detail="Purchase failed")
     result_obj = json.loads(result)
