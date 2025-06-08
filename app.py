@@ -7,6 +7,7 @@ from db_control.connect_MySQL import engine
 # from db_control import crud, mymodels
 from db_control import crud, mymodels_MySQL
 from schemas import Barcode, ItemInfo, Transaction,TransactionDetail, TransactionId ,PurchasePrice
+import math
 
 # MySQLのテーブル作成
 from db_control.create_tables_MySQL import init_db
@@ -66,7 +67,7 @@ def purchase(purchase_item: Transaction):
         
         #4) 税抜き金額計算
         # 各明細ごとに(price × count) ÷ ((100+TAX_CD)×0.01)を足し合わせ
-        total_price_no_tax = int(
+        total_price_no_tax = math.ceil(
             sum(
                 (item.PRD_PRICE * item.PRD_COUNT) / ((100+int(item.TAX_CD))*0.01)
                 for item in purchase_item.ITEMS
