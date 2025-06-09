@@ -63,16 +63,16 @@ def purchase(purchase_item: Transaction):
             
         #3) 合計金額計算
         # 各明細ごとにprice × countを足し合わせ
-        total_price = sum(item.PRD_PRICE * item.PRD_COUNT for item in purchase_item.ITEMS)
-        
-        #4) 税抜き金額計算
-        # 各明細ごとに(price × count) ÷ ((100+TAX_CD)×0.01)を足し合わせ
-        total_price_no_tax = math.ceil(
+        total_price = math.floor(
             sum(
-                (item.PRD_PRICE * item.PRD_COUNT) / ((100+int(item.TAX_CD))*0.01)
+                (item.PRD_PRICE * item.PRD_COUNT) * ((100+int(item.TAX_CD))*0.01)
                 for item in purchase_item.ITEMS
             )
         )
+        
+        #4) 税抜き金額計算
+        # 各明細ごとに(price × count) ÷ ((100+TAX_CD)×0.01)を足し合わせ
+        total_price_no_tax = sum(item.PRD_PRICE * item.PRD_COUNT for item in purchase_item.ITEMS)
 
     except Exception as e:
         session.rollback()
